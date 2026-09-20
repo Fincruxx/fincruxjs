@@ -1,0 +1,37 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+dist
+docs
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage
+.nyc_output
+
+# Dependency directories
+node_modules
+jspm_packages
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# OS
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Env
+.env
+.env.*

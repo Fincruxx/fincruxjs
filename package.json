@@ -1,0 +1,57 @@
+{
+  "name": "fincrux",
+  "version": "0.1.0",
+  "description": "The official TypeScript/JavaScript client for the Fincrux financial data APIs",
+  "main": "./dist/lib/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "check": "biome check .",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "test": "npm run build && mocha --allowJs test/**/*.js",
+    "generate-docs": "npx typedoc --out ./docs"
+  },
+  "files": [
+    "dist",
+    "types",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fincrux/fincruxjs.git"
+  },
+  "keywords": [
+    "fincrux",
+    "finance",
+    "stock",
+    "market",
+    "api",
+    "javascript",
+    "typescript",
+    "india",
+    "nse"
+  ],
+  "author": "Fincrux",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fincrux/fincruxjs/issues"
+  },
+  "homepage": "https://fincrux.org",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nock": "^13.2.4",
+    "typedoc": "^0.28.5",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "engineStrict": true
+}

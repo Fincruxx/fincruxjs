@@ -1,0 +1,8 @@
+{
+  "out": "docs",
+  "name": "Fincrux TypeScript client",
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "entryPoints": ["lib/index.ts", "interfaces/index.ts"]
+}
