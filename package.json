@@ -10,6 +10,7 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "test": "npm run build && mocha --allowJs test/**/*.js",
+    "prepublishOnly": "npm run check && npm test",
     "generate-docs": "npx typedoc --out ./docs"
   },
   "files": [
