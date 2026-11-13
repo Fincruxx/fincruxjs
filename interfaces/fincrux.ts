@@ -7,6 +7,8 @@ export type HistoricalInterval =
 
 export type MarketInterval = '1D' | '1M';
 
+export type StatementType = 'standalone' | 'consolidated';
+
 export type FIIDataType =
 	| 'index_futures'
 	| 'stock_futures'
@@ -47,6 +49,7 @@ export interface TopRatios {
 }
 
 export interface CompanyFinancialData {
+	statement_type: StatementType;
 	about: string;
 	top_ratios: TopRatios;
 	quaterly_results: FinancialTable;
@@ -130,6 +133,71 @@ export interface GetHistoricalsOptions {
 
 export interface ForceUpdateOptions {
 	force_update?: boolean;
+}
+
+export interface StatementOptions {
+	statement_type?: StatementType;
+}
+
+export interface CompanyFilingAnnouncement {
+	title: string;
+	category: string | null;
+	url: string;
+	published_at: string | null;
+	summary: string | null;
+	is_revised: boolean;
+}
+
+export interface CompanyAnnualReport {
+	title: string;
+	year: string | null;
+	url: string;
+}
+
+export interface CompanyFilingsData {
+	announcements: CompanyFilingAnnouncement[];
+	annual_reports: CompanyAnnualReport[];
+	fetched_at: string;
+}
+
+export interface GetCompanyFilingsResponse {
+	success: SuccessFlag;
+	company: string;
+	trading_symbol: string;
+	data: CompanyFilingsData;
+	message?: string;
+}
+
+export interface NewsArticle {
+	heading: string;
+	summary: string;
+	thumbnail: string;
+	article_link: string;
+	published_time: number;
+}
+
+export interface NewsPageMetadata {
+	page: {
+		page_number: number;
+		page_size: number;
+		total_records: number;
+		total_pages: number;
+	};
+}
+
+export interface GetCompanyNewsResponse {
+	company: string;
+	trading_symbol: string;
+	instrument_key: string | null;
+	data: NewsArticle[];
+	metadata: NewsPageMetadata;
+	fetched_at: string | null;
+	message?: string;
+}
+
+export interface NewsOptions {
+	page_number?: number;
+	page_size?: number;
 }
 
 export interface MarketQueryOptions {

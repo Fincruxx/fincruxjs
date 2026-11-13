@@ -1,6 +1,6 @@
 {
   "name": "fincrux",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The official TypeScript/JavaScript client for the Fincrux financial data APIs",
   "main": "./dist/lib/index.js",
   "types": "./types/index.d.ts",

@@ -7,6 +7,8 @@ export type HistoricalInterval =
 
 export type MarketInterval = '1D' | '1M';
 
+export type StatementType = 'standalone' | 'consolidated';
+
 export type FIIDataType =
 	| 'index_futures'
 	| 'stock_futures'
@@ -47,6 +49,7 @@ export interface TopRatios {
 }
 
 export interface CompanyFinancialData {
+	statement_type: StatementType;
 	about: string;
 	top_ratios: TopRatios;
 	quaterly_results: FinancialTable;
@@ -111,6 +114,71 @@ export interface ForceUpdateOptions {
 	force_update?: boolean;
 }
 
+export interface StatementOptions {
+	statement_type?: StatementType;
+}
+
+export interface CompanyFilingAnnouncement {
+	title: string;
+	category: string | null;
+	url: string;
+	published_at: string | null;
+	summary: string | null;
+	is_revised: boolean;
+}
+
+export interface CompanyAnnualReport {
+	title: string;
+	year: string | null;
+	url: string;
+}
+
+export interface CompanyFilingsData {
+	announcements: CompanyFilingAnnouncement[];
+	annual_reports: CompanyAnnualReport[];
+	fetched_at: string;
+}
+
+export interface GetCompanyFilingsResponse {
+	success: SuccessFlag;
+	company: string;
+	trading_symbol: string;
+	data: CompanyFilingsData;
+	message?: string;
+}
+
+export interface NewsArticle {
+	heading: string;
+	summary: string;
+	thumbnail: string;
+	article_link: string;
+	published_time: number;
+}
+
+export interface NewsPageMetadata {
+	page: {
+		page_number: number;
+		page_size: number;
+		total_records: number;
+		total_pages: number;
+	};
+}
+
+export interface GetCompanyNewsResponse {
+	company: string;
+	trading_symbol: string;
+	instrument_key: string | null;
+	data: NewsArticle[];
+	metadata: NewsPageMetadata;
+	fetched_at: string | null;
+	message?: string;
+}
+
+export interface NewsOptions {
+	page_number?: number;
+	page_size?: number;
+}
+
 export interface MarketQueryOptions {
 	interval?: MarketInterval;
 	from_date?: string;
@@ -128,6 +196,7 @@ export declare class Fincrux {
 	root: string;
 	readonly VALID_INTERVALS: readonly HistoricalInterval[];
 	readonly VALID_MARKET_INTERVALS: readonly MarketInterval[];
+	readonly VALID_STATEMENT_TYPES: readonly StatementType[];
 	readonly VALID_FII_DATA_TYPES: readonly FIIDataType[];
 	readonly VERSION: string;
 	readonly PACKAGE_URL: string;
@@ -138,7 +207,16 @@ export declare class Fincrux {
 	searchCompany(query: string): Promise<SearchResult[]>;
 	getCompanyFinancials(
 		company_trading_symbol: string,
+		options?: StatementOptions,
 	): Promise<GetCompanyFinancialsResponse>;
+	getCompanyFilings(
+		company_trading_symbol: string,
+		options?: ForceUpdateOptions,
+	): Promise<CompanyFilingsData>;
+	getCompanyNews(
+		company_trading_symbol: string,
+		options?: NewsOptions,
+	): Promise<GetCompanyNewsResponse>;
 	getCompanyHistoricals(
 		company_trading_symbol: string,
 		options?: GetHistoricalsOptions,
@@ -163,11 +241,14 @@ export declare const DEFAULT_ROOT: string;
 export declare const PACKAGE_URL: string;
 export declare const VALID_INTERVALS: readonly HistoricalInterval[];
 export declare const VALID_MARKET_INTERVALS: readonly MarketInterval[];
+export declare const VALID_STATEMENT_TYPES: readonly StatementType[];
 export declare const VALID_FII_DATA_TYPES: readonly FIIDataType[];
 export declare const ROUTES: {
 	readonly 'company.all': '/api/all_companies';
 	readonly 'company.search': '/api/search/{query}';
 	readonly 'company.financials': '/api/financials/{company_trading_symbol}';
+	readonly 'company.filings': '/api/filings/{company_trading_symbol}';
+	readonly 'company.news': '/api/news/{company_trading_symbol}';
 	readonly 'company.historicals': '/api/historicals/{company_trading_symbol}';
 	readonly 'company.corporate_actions': '/api/corporate-actions/{company_trading_symbol}';
 	readonly 'company.competitors': '/api/competitors/{company_trading_symbol}';

@@ -2,7 +2,7 @@
 
 The official TypeScript/JavaScript client for communicating with the [Fincrux API](https://fincrux.org).
 
-Fincrux exposes REST APIs for company fundamentals, historical candles, corporate actions, peer competitors, and FII/DII market activity.
+Fincrux exposes REST APIs for company fundamentals, filings, news, historical candles, corporate actions, peer competitors, and FII/DII market activity.
 
 Licensed under the MIT License.
 
@@ -60,6 +60,17 @@ async function financials() {
   try {
     const data = await fc.getCompanyFinancials("RELIANCE");
     console.log("Financials:", data.company, data.data?.top_ratios);
+
+    const consolidated = await fc.getCompanyFinancials("RELIANCE", {
+      statement_type: "consolidated",
+    });
+    console.log("Consolidated:", consolidated.data?.statement_type);
+
+    const filings = await fc.getCompanyFilings("RELIANCE");
+    console.log("Filings:", filings.announcements, filings.annual_reports);
+
+    const news = await fc.getCompanyNews("RELIANCE", { page_size: 10 });
+    console.log("News:", news.data);
   } catch (err) {
     console.error("Error getting financials:", err);
   }
@@ -88,7 +99,9 @@ init();
 | --- | --- |
 | `allCompanies()` | List all companies |
 | `searchCompany(query)` | Search companies by name |
-| `getCompanyFinancials(symbol)` | Financial statements and ratios |
+| `getCompanyFinancials(symbol, options?)` | Financial statements and ratios (`standalone` or `consolidated`) |
+| `getCompanyFilings(symbol, options?)` | Recent announcements and annual reports with source links |
+| `getCompanyNews(symbol, options?)` | Paginated company news |
 | `getCompanyHistoricals(symbol, options?)` | OHLC candles |
 | `getCorporateActions(symbol, options?)` | Corporate actions |
 | `getCompetitors(symbol, options?)` | Peer competitors |
@@ -98,6 +111,18 @@ init();
 ### Historical intervals
 
 `1minute`, `30minutes`, `day`, `week`, `month`
+
+### Statement types
+
+`standalone`, `consolidated`
+
+### Filings
+
+`getCompanyFilings` returns `announcements` (latest 5) and `annual_reports`, each with the original filing `url` and `published_at`. `is_revised` is derived from the filing title.
+
+### News
+
+`getCompanyNews` accepts `{ page_number, page_size }` (both 1-100) and returns `data` plus pagination `metadata`.
 
 ### FII / DII intervals
 

@@ -1,6 +1,9 @@
 import { Fincrux, FincruxError } from './fincrux';
 
 export type {
+	CompanyAnnualReport,
+	CompanyFilingAnnouncement,
+	CompanyFilingsData,
 	CompanyFinancialData,
 	CompanyListItem,
 	FIIActivityData,
@@ -8,15 +11,22 @@ export type {
 	FinancialTable,
 	FincruxParams,
 	ForceUpdateOptions,
+	GetCompanyFilingsResponse,
 	GetCompanyFinancialsResponse,
 	GetCompanyHistoricalsResponse,
+	GetCompanyNewsResponse,
 	GetHistoricalsOptions,
 	HistoricalCandle,
 	HistoricalInterval,
 	MarketActivityRow,
 	MarketInterval,
 	MarketQueryOptions,
+	NewsArticle,
+	NewsOptions,
+	NewsPageMetadata,
 	SearchResult,
+	StatementOptions,
+	StatementType,
 	SuccessFlag,
 	TopRatios,
 } from './fincrux';
@@ -27,6 +37,7 @@ export {
 	VALID_FII_DATA_TYPES,
 	VALID_INTERVALS,
 	VALID_MARKET_INTERVALS,
+	VALID_STATEMENT_TYPES,
 	VERSION,
 } from './fincrux';
 export { Fincrux, FincruxError };

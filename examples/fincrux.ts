@@ -8,6 +8,8 @@ async function init() {
 	try {
 		await search();
 		await financials();
+		await filings();
+		await news();
 		await historicals();
 		await fii();
 		await dii();
@@ -25,6 +27,22 @@ async function financials() {
 	const data = await fc.getCompanyFinancials('RELIANCE');
 	console.log('Company:', data.company);
 	console.log('Top ratios:', data.data?.top_ratios);
+
+	const consolidated = await fc.getCompanyFinancials('RELIANCE', {
+		statement_type: 'consolidated',
+	});
+	console.log('Consolidated:', consolidated.data?.statement_type);
+}
+
+async function filings() {
+	const data = await fc.getCompanyFilings('RELIANCE');
+	console.log('Announcements:', data.announcements.slice(0, 2));
+	console.log('Annual reports:', data.annual_reports.slice(0, 2));
+}
+
+async function news() {
+	const data = await fc.getCompanyNews('RELIANCE', { page_size: 10 });
+	console.log('News:', data.data.slice(0, 3));
 }
 
 async function historicals() {

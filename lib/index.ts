@@ -5,6 +5,7 @@ export {
 	VALID_FII_DATA_TYPES,
 	VALID_INTERVALS,
 	VALID_MARKET_INTERVALS,
+	VALID_STATEMENT_TYPES,
 	VERSION,
 } from '../constants';
 export type * from '../interfaces';

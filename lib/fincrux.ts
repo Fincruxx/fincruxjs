@@ -5,25 +5,32 @@ import {
 	VALID_FII_DATA_TYPES,
 	VALID_INTERVALS,
 	VALID_MARKET_INTERVALS,
+	VALID_STATEMENT_TYPES,
 	VERSION,
 } from '../constants';
 import type {
 	AllCompaniesResponse,
 	ApiSuccessResponse,
+	CompanyFilingsData,
 	CompanyListItem,
 	FIIActivityData,
 	FIIDataType,
 	FincruxParams,
 	ForceUpdateOptions,
+	GetCompanyFilingsResponse,
 	GetCompanyFinancialsResponse,
 	GetCompanyHistoricalsResponse,
+	GetCompanyNewsResponse,
 	GetHistoricalsOptions,
 	HistoricalInterval,
 	MarketActivityRow,
 	MarketInterval,
 	MarketQueryOptions,
+	NewsOptions,
 	SearchCompanyResponse,
 	SearchResult,
+	StatementOptions,
+	StatementType,
 } from '../interfaces';
 import { cleanParams, FincruxError, isSuccess, messageFromBody } from './utils';
 
@@ -62,6 +69,7 @@ export class Fincrux {
 
 	readonly VALID_INTERVALS = VALID_INTERVALS;
 	readonly VALID_MARKET_INTERVALS = VALID_MARKET_INTERVALS;
+	readonly VALID_STATEMENT_TYPES = VALID_STATEMENT_TYPES;
 	readonly VALID_FII_DATA_TYPES = VALID_FII_DATA_TYPES;
 	readonly VERSION = VERSION;
 	readonly PACKAGE_URL = PACKAGE_URL;
@@ -97,12 +105,76 @@ export class Fincrux {
 	/**
 	 * Fetches financial statements and ratios for a company.
 	 * @param company_trading_symbol NSE trading symbol.
+	 * @param options Statement type (`standalone` by default).
 	 */
 	async getCompanyFinancials(
 		company_trading_symbol: string,
+		options: StatementOptions = {},
 	): Promise<GetCompanyFinancialsResponse> {
-		return this._get<GetCompanyFinancialsResponse>('company.financials', {
-			company_trading_symbol,
+		const statement_type: StatementType =
+			options.statement_type ?? 'standalone';
+		if (
+			!(VALID_STATEMENT_TYPES as readonly string[]).includes(statement_type)
+		) {
+			throw new FincruxError(
+				`Invalid statement_type. Choose from: ${VALID_STATEMENT_TYPES.join(', ')}`,
+			);
+		}
+
+		return this._get<GetCompanyFinancialsResponse>(
+			'company.financials',
+			{ company_trading_symbol },
+			{ statement_type },
+		);
+	}
+
+	/**
+	 * Fetches recent announcements and annual reports for a company.
+	 * @param company_trading_symbol NSE trading symbol.
+	 * @param options Optional force_update flag.
+	 */
+	async getCompanyFilings(
+		company_trading_symbol: string,
+		options: ForceUpdateOptions = {},
+	): Promise<CompanyFilingsData> {
+		const response = await this._get<GetCompanyFilingsResponse>(
+			'company.filings',
+			{ company_trading_symbol },
+			{ force_update: options.force_update ?? false },
+		);
+
+		if (isSuccess(response.success)) {
+			return response.data;
+		}
+		throw new FincruxError(
+			messageFromBody(response, 'Failed to fetch filings'),
+			{ body: response },
+		);
+	}
+
+	/**
+	 * Fetches recent news articles for a company.
+	 * @param company_trading_symbol NSE trading symbol.
+	 * @param options Page number and page size.
+	 */
+	async getCompanyNews(
+		company_trading_symbol: string,
+		options: NewsOptions = {},
+	): Promise<GetCompanyNewsResponse> {
+		const response = await this._get<GetCompanyNewsResponse>(
+			'company.news',
+			{ company_trading_symbol },
+			{
+				page_number: options.page_number ?? 1,
+				page_size: options.page_size ?? 20,
+			},
+		);
+
+		if (Array.isArray(response.data)) {
+			return response;
+		}
+		throw new FincruxError(messageFromBody(response, 'Failed to fetch news'), {
+			body: response,
 		});
 	}
 
